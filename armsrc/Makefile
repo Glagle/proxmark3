@@ -47,6 +47,9 @@ THUMBSRC = start.c \
 	util.c \
 	string.c \
 	usb_cdc.c \
+	LCD.c \
+	BEE.c\
+	Flash.c\
 	cmd.c
 
 # These are to be compiled in ARM mode

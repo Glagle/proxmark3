@@ -60,27 +60,50 @@
 
 #define SPI_FPGA_MODE	0
 #define SPI_LCD_MODE	1
+#define SPI_FLASH_MODE  2
+
 
 #define TRUE 1
 #define FALSE 0
 
 //#define PACKED __attribute__((__packed__))
 
-#define LED_A_ON()		HIGH(GPIO_LED_A)
-#define LED_A_OFF()		LOW(GPIO_LED_A)
+#define LED_A_ON()		LOW(GPIO_LED_A)
+#define LED_A_OFF()		HIGH(GPIO_LED_A)
 #define LED_A_INV()		INVBIT(GPIO_LED_A)
-#define LED_B_ON()		HIGH(GPIO_LED_B)
-#define LED_B_OFF()		LOW(GPIO_LED_B)
+#define LED_B_ON()		LOW(GPIO_LED_B)
+#define LED_B_OFF()		HIGH(GPIO_LED_B)
 #define LED_B_INV()		INVBIT(GPIO_LED_B)
-#define LED_C_ON()		HIGH(GPIO_LED_C)
-#define LED_C_OFF()		LOW(GPIO_LED_C)
+
+#define LED_C_ON()		LOW(GPIO_LED_C)
+#define LED_C_OFF()		HIGH(GPIO_LED_C)
 #define LED_C_INV()		INVBIT(GPIO_LED_C)
-#define LED_D_ON()		HIGH(GPIO_LED_D)
-#define LED_D_OFF()		LOW(GPIO_LED_D)
+
+#define LED_D_ON()		LOW(GPIO_LED_D)
+#define LED_D_OFF()		HIGH(GPIO_LED_D) 
 #define LED_D_INV()		INVBIT(GPIO_LED_D)
+#define BEE_ON()		HIGH(GPIO_BEE)
+#define BEE_OFF()		LOW(GPIO_BEE) 
+
+#define SCK_low         LOW(GPIO_SPCK) 
+#define SCK_high        HIGH(GPIO_SPCK) 
+#define MOSI_high       HIGH(GPIO_MOSI)
+#define MOSI_low        LOW(GPIO_MOSI)
+#define nCS_low         LOW(GPIO_NCS2)
+#define nCS_high        HIGH(GPIO_NCS2)
+
+
+#define MISO_VALUE     (AT91C_BASE_PIOA->PIO_PDSR & GPIO_MISO)
+
+
+
 #define RELAY_ON()		HIGH(GPIO_RELAY)
 #define RELAY_OFF()		LOW(GPIO_RELAY)
 #define BUTTON_PRESS()	!(AT91C_BASE_PIOA->PIO_PDSR & GPIO_BUTTON)
+
+#define BUTTON_C_PRESS()	!(AT91C_BASE_PIOA->PIO_PDSR & GPIO_C_BUTTON)
+#define BUTTON_A_PRESS()	!(AT91C_BASE_PIOA->PIO_PDSR & GPIO_A_BUTTON)
+
 
 #define VERSION_INFORMATION_MAGIC 0x56334d50
 struct version_information {

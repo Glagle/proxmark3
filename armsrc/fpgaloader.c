@@ -43,35 +43,37 @@ static const uint8_t _bitparse_fixed_header[] = {0x00, 0x09, 0x0f, 0xf0, 0x0f, 0
 //-----------------------------------------------------------------------------
 void SetupSpi(int mode)
 {
-	// PA10 -> SPI_NCS2 chip select (LCD)
-	// PA11 -> SPI_NCS0 chip select (FPGA)
-	// PA12 -> SPI_MISO Master-In Slave-Out
-	// PA13 -> SPI_MOSI Master-Out Slave-In
-	// PA14 -> SPI_SPCK Serial Clock
+	
 
-	// Disable PIO control of the following pins, allows use by the SPI peripheral
-	AT91C_BASE_PIOA->PIO_PDR =
-		GPIO_NCS0	|
-		GPIO_NCS2 	|
-		GPIO_MISO	|
-		GPIO_MOSI	|
-		GPIO_SPCK;
-
-	AT91C_BASE_PIOA->PIO_ASR =
-		GPIO_NCS0	|
-		GPIO_MISO	|
-		GPIO_MOSI	|
-		GPIO_SPCK;
-
-	AT91C_BASE_PIOA->PIO_BSR = GPIO_NCS2;
-
-	//enable the SPI Peripheral clock
-	AT91C_BASE_PMC->PMC_PCER = (1<<AT91C_ID_SPI);
-	// Enable SPI
-	AT91C_BASE_SPI->SPI_CR = AT91C_SPI_SPIEN;
-
-	switch (mode) {
+	switch (mode) {                 //见手册292页
 		case SPI_FPGA_MODE:
+				// PA10 -> SPI_NCS2 chip select (LCD)  flash
+				// PA11 -> SPI_NCS0 chip select (FPGA)
+				// PA12 -> SPI_MISO Master-In Slave-Out
+				// PA13 -> SPI_MOSI Master-Out Slave-In
+				// PA14 -> SPI_SPCK Serial Clock
+
+				// Disable PIO control of the following pins, allows use by the SPI peripheral
+				AT91C_BASE_PIOA->PIO_PDR =
+					GPIO_NCS0	|
+					GPIO_NCS2 	|
+					GPIO_MISO	|
+					GPIO_MOSI	|
+					GPIO_SPCK;
+
+				AT91C_BASE_PIOA->PIO_ASR =
+					GPIO_NCS0	|
+					GPIO_MISO	|
+					GPIO_MOSI	|
+					GPIO_SPCK;
+
+				AT91C_BASE_PIOA->PIO_BSR = GPIO_NCS2;
+
+				//enable the SPI Peripheral clock
+				AT91C_BASE_PMC->PMC_PCER = (1<<AT91C_ID_SPI);
+				// Enable SPI
+				AT91C_BASE_SPI->SPI_CR = AT91C_SPI_SPIEN;
+				
 			AT91C_BASE_SPI->SPI_MR =
 				( 0 << 24)	|	// Delay between chip selects (take default: 6 MCK periods)
 				(14 << 16)	|	// Peripheral Chip Select (selects FPGA SPI_NCS0 or PA11)
@@ -89,7 +91,35 @@ void SetupSpi(int mode)
 				( 1 << 1)	|	// Clock Phase data captured on leading edge, changes on following edge
 				( 0 << 0);		// Clock Polarity inactive state is logic 0
 			break;
+			
 		case SPI_LCD_MODE:
+				// PA10 -> SPI_NCS2 chip select (LCD)  flash
+				// PA11 -> SPI_NCS0 chip select (FPGA)
+				// PA12 -> SPI_MISO Master-In Slave-Out
+				// PA13 -> SPI_MOSI Master-Out Slave-In
+				// PA14 -> SPI_SPCK Serial Clock
+
+				// Disable PIO control of the following pins, allows use by the SPI peripheral
+				AT91C_BASE_PIOA->PIO_PDR =
+					GPIO_NCS0	|
+					GPIO_NCS2 	|
+					GPIO_MISO	|
+					GPIO_MOSI	|
+					GPIO_SPCK;
+
+				AT91C_BASE_PIOA->PIO_ASR =
+					GPIO_NCS0	|
+					GPIO_MISO	|
+					GPIO_MOSI	|
+					GPIO_SPCK;
+
+				AT91C_BASE_PIOA->PIO_BSR = GPIO_NCS2;
+
+				//enable the SPI Peripheral clock
+				AT91C_BASE_PMC->PMC_PCER = (1<<AT91C_ID_SPI);
+				// Enable SPI
+				AT91C_BASE_SPI->SPI_CR = AT91C_SPI_SPIEN;
+				
 			AT91C_BASE_SPI->SPI_MR =
 				( 0 << 24)	|	// Delay between chip selects (take default: 6 MCK periods)
 				(11 << 16)	|	// Peripheral Chip Select (selects LCD SPI_NCS2 or PA10)
@@ -102,10 +132,35 @@ void SetupSpi(int mode)
 				( 1 << 24)	|	// Delay between Consecutive Transfers (32 MCK periods)
 				( 1 << 16)	|	// Delay Before SPCK (1 MCK period)
 				( 6 << 8)	|	// Serial Clock Baud Rate (baudrate = MCK/6 = 24Mhz/6 = 4M baud
-				( 1 << 4)	|	// Bits per Transfer (9 bits)
+				( 8 << 4)	|	// Bits per Transfer (16 bits)
 				( 0 << 3)	|	// Chip Select inactive after transfer
 				( 1 << 1)	|	// Clock Phase data captured on leading edge, changes on following edge
 				( 0 << 0);		// Clock Polarity inactive state is logic 0
+			break;
+			
+		case SPI_FLASH_MODE:    //采用IO模拟的方式
+
+		  // Kill all the pullups,
+		    AT91C_BASE_PIOA->PIO_PPUDR =
+		    GPIO_NCS2   |
+		    GPIO_MOSI   |
+		    GPIO_SPCK   ;
+
+		 // These pins are outputs
+		    AT91C_BASE_PIOA->PIO_OER =
+            GPIO_NCS2   |
+		    GPIO_MOSI   |
+		    GPIO_SPCK   ;
+
+
+           // PIO controls the following pins
+           AT91C_BASE_PIOA->PIO_PER =
+            GPIO_NCS2   |
+		    GPIO_MOSI   |
+		    GPIO_SPCK   ;
+
+			
+			
 			break;
 		default:				// Disable SPI
 			AT91C_BASE_SPI->SPI_CR = AT91C_SPI_SPIDIS;

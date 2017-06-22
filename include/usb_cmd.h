@@ -42,6 +42,12 @@ typedef struct{
 	int trigger_threshold;
 } sample_config;
 
+//For the TEST
+#define HW_FLASH_TEST                                                   0xf1
+#define HW_BUZZER_TEST                                                  0xf3
+#define HW_USB_WRITE                                                    0xf2
+
+
 // For the bootloader
 #define CMD_DEVICE_INFO                                                   0x0000
 #define CMD_SETUP_WRITE                                                   0x0001

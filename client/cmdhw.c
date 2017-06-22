@@ -456,6 +456,32 @@ int CmdPing(const char *Cmd)
 	return 0;
 }
 
+int CmdFlash(const char *Cmd)
+{
+	clearCommandBuffer();
+	//UsbCommand resp;
+	UsbCommand c = {HW_FLASH_TEST};
+	SendCommand(&c);
+
+	return 0;
+}
+
+
+int CmdBee(const char *Cmd)
+{
+	clearCommandBuffer();
+	//UsbCommand resp;
+	UsbCommand c = {HW_BUZZER_TEST};
+	SendCommand(&c);
+	/*if (WaitForResponseTimeout(CMD_ACK,&resp,1000)) {
+		PrintAndLog("Ping successfull");
+	}else{
+		PrintAndLog("CmdBee failed");
+	}*/
+	return 0;
+}
+
+
 static command_t CommandTable[] = 
 {
 	{"help",          CmdHelp,        1, "This help"},
@@ -471,6 +497,8 @@ static command_t CommandTable[] =
 	{"version",       CmdVersion,     0, "Show version information about the connected Proxmark"},
 	{"status",        CmdStatus,      0, "Show runtime status information about the connected Proxmark"},
 	{"ping",          CmdPing,        0, "Test if the pm3 is responsive"},
+	{"EXFLASH",       CmdFlash,       0, "Test if the flash can work"},
+    {"Bee",           CmdBee,         0, "Test if the Bee can work"},
 	{NULL, NULL, 0, NULL}
 };
 

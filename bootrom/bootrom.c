@@ -244,6 +244,9 @@ void BootROM(void)
 		GPIO_LED_B			|
 		GPIO_LED_C			|
 		GPIO_LED_D			|
+		GPIO_BEE            |
+		FLASH_WP            |
+		FLASH_HOLD          |
 		GPIO_FPGA_DIN		|
 		GPIO_FPGA_DOUT		|
 		GPIO_FPGA_CCLK		|
@@ -263,6 +266,9 @@ void BootROM(void)
 		GPIO_LED_B			|
 		GPIO_LED_C			|
 		GPIO_LED_D			|
+		GPIO_BEE            |
+		FLASH_HOLD          |
+		FLASH_WP            |
 		GPIO_RELAY			|
 		GPIO_NVDD_ON;
 	// PIO controls the following pins
@@ -271,6 +277,9 @@ void BootROM(void)
 		GPIO_LED_A			|
 		GPIO_LED_B			|
 		GPIO_LED_C			|
+		GPIO_BEE            |
+		FLASH_WP            |
+		FLASH_HOLD          |
 		GPIO_LED_D;
 
 //    USB_D_PLUS_PULLUP_OFF();

@@ -3,6 +3,7 @@ These are command definitions. This file should correspond exactly to usb_cmd.h.
 --]]
 --// For the bootloader
 local _commands = {
+
 	CMD_DEVICE_INFO =                                                    0x0000,
 	CMD_SETUP_WRITE =                                                    0x0001,
 	CMD_FINISH_WRITE =                                                   0x0003,
@@ -22,6 +23,10 @@ local _commands = {
 	CMD_VERSION =                                                        0x0107,
 	CMD_STATUS =                                                         0x0108,
 	CMD_PING =                                                           0x0109,
+	
+	HW_FLASH_TEST =                                                      0xf1,
+	HW_BUZZER_TEST=                                                      0xf3,
+	HW_USB_WRITE =                                                       0xf2,
 	--// For low-frequency tags
 	CMD_READ_TI_TYPE =                                                   0x0202,
 	CMD_WRITE_TI_TYPE =                                                  0x0203,

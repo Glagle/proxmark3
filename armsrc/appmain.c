@@ -28,9 +28,10 @@
 #include "BigBuf.h"
 #include "mifareutil.h"
 #include "pcf7931.h"
-#ifdef WITH_LCD
- #include "LCD.h"
-#endif
+//#ifdef WITH_LCD
+ #include "flash.h"
+ #include "BEE.h"
+//#endif
 
 // Craig Young - 14a stand-alone code
 #ifdef WITH_ISO14443a_StandAlone
@@ -928,13 +929,17 @@ void ListenReaderField(int limit)
 	}
 }
 
+
 void UsbPacketReceived(uint8_t *packet, int len)
 {
 	UsbCommand *c = (UsbCommand *)packet;
+	uint8_t d=5;
+	
 
 //  Dbprintf("received %d bytes, with command: 0x%04x and args: %d %d %d",len,c->cmd,c->arg[0],c->arg[1],c->arg[2]);
   
 	switch(c->cmd) {
+
 #ifdef WITH_LF
 		case CMD_SET_LF_SAMPLING_CONFIG:
 			setSamplingConfig((sample_config *) c->d.asBytes);
@@ -1339,6 +1344,7 @@ void UsbPacketReceived(uint8_t *packet, int len)
 				// We're going to reset, and the bootrom will take control.
 			}
 			break;
+			
 
 		case CMD_START_FLASH:
 			if(common_area.flags.bootrom_present) {
@@ -1356,14 +1362,45 @@ void UsbPacketReceived(uint8_t *packet, int len)
 			break;
 		}
 		default:
-			Dbprintf("%s: 0x%04x","unknown command:",c->cmd);
+			Dbprintf("%s: 0x%04x \r\n"," unknown command",c->cmd );
 			break;
+			
 	}
+
+	d=(c->cmd )& 0xff;
+	//Dbprintf("%d \r\n",d);
+	//Dbprintf("0x%04x \r\n",c->cmd);
+
+	switch(d)
+		{
+
+		case (HW_USB_WRITE):
+			 Dbprintf("%s \r\n"," USB IS OK!");
+			   break; 
+		case (HW_FLASH_TEST):
+			   EXFLASH_TEST();
+			   break;
+	    case (HW_BUZZER_TEST):
+			   //Ring_Little_Star(400);
+			   ring_2_7khz(2000);
+			   break;
+	    default:
+			//Dbprintf("%s: 0x%04x","unknown command:test",c->cmd );
+			   	break;
+		}
+	
 }
 
 void  __attribute__((noreturn)) AppMain(void)
 {
-	SpinDelay(100);
+	//uint32_t long_count;
+   // uint8_t a[3]={0x00,0x00,0x00};       //测试用地址
+   // uint8_t b[data_len]={0x01,0x02};     //测试用数组
+  //  uint8_t f[3]={0x00,0x00,0x01};       //测试用地址
+  //  uint8_t e[3]={0x00,0x00,0x02};       //测试用地址
+	//uint8_t d=0;
+    //uint32_t k;
+	SpinDelay(100);            //延时100MS
 	clear_trace();
 	if(common_area.magic != COMMON_AREA_MAGIC || common_area.version != 1) {
 		/* Initialize common area */
@@ -1373,11 +1410,33 @@ void  __attribute__((noreturn)) AppMain(void)
 	}
 	common_area.flags.osimage_present = 1;
 
-	LED_D_OFF();
-	LED_C_OFF();
-	LED_B_OFF();
-	LED_A_OFF();
+	LED_D_ON();        //red
+  	LED_C_ON();         //blue
+ 	LED_B_ON();      // green
+	//LED_A_OFF();       //blue
 
+	  // EXFLASH_Init();
+    //	EXFLASH_Reset();
+    // c=EXFLASH_ReadID();
+	
+    //EXFLASH_Write_Enable();
+	//EXFLASH_readStat1();
+
+    //EXFLASH_Program(a,b,data_len);
+  
+    //  EXFLASH_Erase();
+	//  d=EXFLASH_Read(f);
+//	 EXFLASH_Read(f);
+	
+
+
+   //  long_count=400;
+
+	 // Ring_ALL(long_count);
+ 
+     // Ring_Little_Star(long_count);
+	
+ 
 	// Init USB device
   usb_enable();
 
@@ -1407,8 +1466,17 @@ void  __attribute__((noreturn)) AppMain(void)
 
   byte_t rx[sizeof(UsbCommand)];
 	size_t rx_len;
-  
+
+
 	for(;;) {
+		
+   if (BUTTON_C_PRESS())    LED_C_INV();      //按键检测
+   if (BUTTON_A_PRESS())    LED_B_INV();      //按键检测
+   if (BUTTON_PRESS())      LED_D_INV();      //按键检测
+      //usb_write(&c,1);
+     // usb_write(&d,1);
+ 
+
     if (usb_poll()) {
       rx_len = usb_read(rx,sizeof(UsbCommand));
       if (rx_len) {
